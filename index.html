@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f7f7">
+  <title>Tyrese's Frog Runner</title>
+  <link rel="stylesheet" href="dinasourstyle.css">
+  <script src="dinasourscript.js" defer></script>
+</head>
+<body>
+  <main class="game-container">
+    <header class="game-header">
+      <h1>Tyrese's Frog Runner</h1>
+
+      <div class="score-board" aria-label="Game scores">
+        <span>HI <span id="high-score">00000</span></span>
+        <span>SCORE <span id="score">00000</span></span>
+      </div>
+    </header>
+
+    <section
+      id="game"
+      class="game"
+      aria-label="Dinosaur running game"
+      tabindex="0"
+    >
+      <div class="sun" aria-hidden="true"></div>
+
+      <div class="cloud cloud-one" aria-hidden="true"></div>
+      <div class="cloud cloud-two" aria-hidden="true"></div>
+      <div class="cloud cloud-three" aria-hidden="true"></div>
+
+      <div id="message" class="message">
+        <div class="message-card">
+          <h2 id="message-title">Ready to run?</h2>
+          <p id="message-text">Press SPACE, ↑, or tap JUMP to start</p>
+        </div>
+      </div>
+
+      <div id="dino" class="dino" role="img" aria-label="Green running dinosaur">
+        <svg viewBox="0 0 50 52" aria-hidden="true">
+          <g class="dino-body">
+            <!-- Tail and body -->
+            <path d="M3 18 H10 V12 H15 V6 H35 V11 H42 V26 H36 V32 H29 V37 H18 V32 H10 V26 H3 Z"/>
+
+            <!-- Arms -->
+            <path d="M28 25 H38 V29 H32 V33 H27 Z"/>
+
+            <!-- Legs animate independently -->
+            <path class="leg leg-a" d="M13 32 H21 V43 H16 V48 H8 V44 H13 Z"/>
+            <path class="leg leg-b" d="M25 32 H33 V39 H29 V48 H21 V44 H25 Z"/>
+
+            <!-- Eye -->
+            <rect x="31" y="12" width="5" height="5" fill="#fff"/>
+            <rect x="33" y="12" width="3" height="3" fill="#333"/>
+
+            <!-- Mouth -->
+            <path d="M36 22 H42 V25 H36 Z" fill="#fff"/>
+          </g>
+        </svg>
+      </div>
+
+      <div id="ground" class="ground" aria-hidden="true">
+        <div class="ground-line"></div>
+        <div class="ground-pattern"></div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Game controls">
+      <p class="desktop-hint">SPACE / ↑ to jump · Avoid the obstacles!</p>
+
+      <div class="button-row">
+        <button id="jump-button" class="jump-button" type="button">
+          ↑ JUMP
+        </button>
+        <button id="restart" class="restart-button" type="button">
+          ↻ Restart
+        </button>
+      </div>
+
+      <p class="mobile-hint">Tap the game or JUMP to leap over obstacles.</p>
+      <p id="status" class="sr-only" aria-live="polite"></p>
+    </section>
+  </main>
+</body>
+</html>

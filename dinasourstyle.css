@@ -1,0 +1,541 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --red: #d64242;
+  --green: #35bd32;
+  --ink: #454545;
+  --ground: #555;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 30px 16px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-image: url("pennywise.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  font-family: "Courier New", monospace;
+  color: white;
+}
+
+button {
+  font: bold 14px "Courier New", monospace;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+.game:focus-visible {
+  outline: 3px solid #2479df;
+  outline-offset: 4px;
+}
+
+.game-container {
+  width: min(850px, 96vw);
+  margin: auto;
+  padding: 24px;
+  border-radius: 18px;
+
+  /* Subtle glass effect, not a visible box */
+  background: rgba(15, 15, 15, 0.25);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.game-header h1 {
+  margin: 0 0 18px;
+  text-align: center;
+  color: var(--red);
+  font-size: clamp(22px, 4vw, 34px);
+}
+
+.score-board {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+#score,
+#high-score {
+  display: inline-block;
+  min-width: 5ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.game {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+
+  background: transparent;
+
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Decorative sun and clouds */
+
+.sun {
+  position: absolute;
+  top: 22px;
+  right: 12%;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffe58b;
+  box-shadow: 0 0 28px rgba(255, 229, 139, 0.5);
+  pointer-events: none;
+}
+
+.cloud {
+  position: absolute;
+  width: 65px;
+  height: 18px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.72);
+  pointer-events: none;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.cloud::before {
+  left: 12px;
+  width: 26px;
+  height: 26px;
+}
+
+.cloud::after {
+  right: 10px;
+  width: 20px;
+  height: 20px;
+}
+
+.cloud-one {
+  top: 42px;
+  left: 18%;
+}
+
+.cloud-two {
+  top: 82px;
+  left: 57%;
+  transform: scale(0.8);
+}
+
+.cloud-three {
+  top: 28px;
+  left: 76%;
+  transform: scale(0.65);
+}
+
+/* Dinosaur */
+
+.dino {
+  position: absolute;
+  z-index: 3;
+  left: 48px;
+  bottom: 2px;
+  width: 50px;
+  height: 52px;
+  color: var(--green);
+  transform: translateZ(0);
+  transform-origin: center bottom;
+}
+
+.dino svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.dino-body {
+  fill: currentColor;
+}
+
+.dino .leg {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+
+.dino.running .leg-a {
+  animation: run-leg-a 0.16s infinite alternate ease-in-out;
+}
+
+.dino.running .leg-b {
+  animation: run-leg-b 0.16s infinite alternate ease-in-out;
+}
+
+.dino.running {
+  animation: run-bob 0.16s infinite alternate ease-in-out;
+}
+
+.dino.jumping .leg-a,
+.dino.jumping .leg-b {
+  animation: none;
+}
+
+@keyframes run-leg-a {
+  from { transform: rotate(-25deg); }
+  to { transform: rotate(25deg); }
+}
+
+@keyframes run-leg-b {
+  from { transform: rotate(25deg); }
+  to { transform: rotate(-25deg); }
+}
+
+@keyframes run-bob {
+  from { translate: 0 0; }
+  to { translate: 0 -2px; }
+}
+
+/* Ground */
+
+.ground {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+}
+
+.ground-line {
+  position: absolute;
+  inset: 0;
+  background: var(--ground);
+}
+
+.ground-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 28px,
+    rgba(60, 60, 60, 0.8) 28px 33px,
+    transparent 33px 58px
+  );
+  animation: ground-scroll 0.45s linear infinite;
+  animation-play-state: paused;
+}
+
+.game.is-running .ground-pattern {
+  animation-play-state: running;
+}
+
+@keyframes ground-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-58px); }
+}
+
+/* Cactus obstacles */
+
+.cactus {
+  position: absolute;
+  z-index: 2;
+  bottom: 4px;
+  width: 20px;
+  height: 40px;
+  border: 2px solid #248b37;
+  border-bottom: 0;
+  border-radius: 5px 5px 0 0;
+  background: #39ae4c;
+}
+
+.cactus::before,
+.cactus::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 13px;
+  border: 4px solid #248b37;
+  background: #39ae4c;
+}
+
+.cactus::before {
+  left: -9px;
+  top: 14px;
+  border-right: 0;
+  border-radius: 5px 0 0 0;
+}
+
+.cactus::after {
+  right: -9px;
+  top: 5px;
+  border-left: 0;
+  border-radius: 0 5px 0 0;
+}
+
+.cactus.tall {
+  height: 52px;
+  width: 22px;
+}
+
+.cactus.short {
+  height: 29px;
+  width: 17px;
+}
+
+.cactus-cluster {
+  position: absolute;
+  z-index: 2;
+  bottom: 4px;
+  width: 52px;
+  height: 44px;
+}
+
+.cactus-cluster .cactus {
+  left: 0;
+}
+
+.cactus-cluster .cactus:nth-child(2) {
+  left: 24px;
+  height: 31px;
+}
+
+.cactus-cluster .cactus:nth-child(3) {
+  left: 36px;
+  height: 23px;
+  width: 14px;
+}
+
+/* Flying pterodactyl */
+
+.ptero {
+  position: absolute;
+  z-index: 2;
+  bottom: 66px;
+  width: 46px;
+  height: 30px;
+  color: #545454;
+}
+
+.ptero svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ptero-wing {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: flap 0.24s infinite alternate ease-in-out;
+}
+
+@keyframes flap {
+  from { transform: scaleY(0.55); }
+  to { transform: scaleY(1); }
+}
+
+/* Start and game-over overlay */
+
+.message {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.message.hidden {
+  display: none;
+}
+
+.message-card {
+  max-width: 90%;
+  padding: 12px 20px;
+  border: 2px solid rgba(65, 65, 65, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.message-card h2 {
+  margin: 0 0 8px;
+  font-size: clamp(18px, 3vw, 24px);
+}
+
+.message-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Controls */
+
+.controls {
+  padding-top: 12px;
+  text-align: center;
+}
+
+.controls p {
+  font-size: 13px;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.jump-button,
+.restart-button {
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 2px solid #555;
+  border-radius: 6px;
+  background: white;
+  color: #454545;
+}
+
+.jump-button {
+  border-color: #2c8c35;
+  background: #35bd32;
+  color: white;
+}
+
+.jump-button:hover {
+  background: #258d28;
+}
+
+.restart-button:hover {
+  background: #454545;
+  color: white;
+}
+
+.mobile-hint {
+  display: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  body {
+    align-items: flex-start;
+    padding: 20px 10px;
+  }
+
+  .game-container {
+    padding: 12px 6px;
+  }
+
+  .game-header h1 {
+    margin-bottom: 14px;
+  }
+
+  .game {
+    height: 230px;
+  }
+
+  .dino {
+    left: 25px;
+  }
+
+  .score-board {
+    gap: 14px;
+    font-size: 12px;
+  }
+
+  .desktop-hint {
+    display: none;
+  }
+
+  .mobile-hint {
+    display: block;
+  }
+
+  .sun {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dino.running,
+  .dino.running .leg-a,
+  .dino.running .leg-b,
+  .ptero-wing,
+  .ground-pattern {
+    animation-duration: 0.5s;
+  }
+}
+
+/* Title */
+.game-header h1 {
+  color: #ff5555;
+  text-align: center;
+  text-shadow: 2px 2px 5px #000;
+}
+
+/* Score */
+.score-board {
+  color: white;
+  text-shadow: 2px 2px 4px #000;
+}
+
+/* Instructions */
+.controls p {
+  color: white;
+  text-shadow: 2px 2px 5px #000;
+}
+
+/* Start and game-over message */
+.message-card {
+  color: #333;
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Keep buttons clear and visible */
+.jump-button,
+.restart-button {
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
